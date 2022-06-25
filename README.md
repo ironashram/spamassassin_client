@@ -57,3 +57,8 @@ Module can be used in following way:
 
 	pytest -v
 
+To run tests through docker, run the `test.sh` script. (Linux)
+
+	chmod +x test.sh
+	./test.sh
+
