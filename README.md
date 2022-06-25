@@ -1,15 +1,15 @@
 # SpamAssassin Client python module
-This is a python wrapper for SpamAssissin's SPAMC deamon. It provides these methods:
+This is a python wrapper for SpamAssassin's SPAMC deamon. It provides these methods:
 
 <dl>
 <dt>is_spam(level=5) -> bool</dt>
-<dd>SPAM status from SpamAssasin deamon</dd>
+<dd>SPAM status from SpamAssassin deamon</dd>
 <dt>get_score() -> float</dt>
-<dd>final score from SpamAssasin deamon</dd>
+<dd>final score from SpamAssassin deamon</dd>
 <dt>get_fulltext() -> str</dt>
-<dd>full report from SpamAssasin deamon</dd>
+<dd>full report from SpamAssassin deamon</dd>
 <dt>get_report_json() -> dict</dt>
-<dd>full report as JSON from SpamAssasin deamon</dd>
+<dd>full report as JSON from SpamAssassin deamon</dd>
 </dl>
 
 # Installation
