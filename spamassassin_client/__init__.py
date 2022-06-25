@@ -1,4 +1,7 @@
-import socket, select, re, logging
+import socket
+import select
+import re
+import logging
 from io import BytesIO
 
 divider_pattern = re.compile(br'^(.*?)\r?\n(.*?)\r?\n\r?\n', re.DOTALL)
@@ -6,14 +9,14 @@ first_line_pattern = re.compile(br'^SPAMD/[^ ]+ 0 EX_OK$')
 
 
 class SpamAssassin(object):
-    def __init__(self, message, timeout=20):
+    def __init__(self, message, timeout=20, host='127.0.0.1', port=783):
         self.score = None
         self.symbols = None
 
         # Connecting
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(timeout)
-        client.connect(('127.0.0.1', 783))
+        client.connect((host, port))
 
         # Sending
         client.sendall(self._build_message(message))
@@ -77,12 +80,11 @@ class SpamAssassin(object):
 
         self.report_fulltext = '\n'.join(report_list)
 
-
         # join line when current one is only wrap of previous
         tablelists_temp = []
         if tablelists:
             for counter, tablelist in enumerate(tablelists):
-                if len(tablelist)>1:
+                if len(tablelist) > 1:
                     if (tablelist[0].isnumeric() or tablelist[0] == '-') and (tablelist[1].isnumeric() or tablelist[1] == '.'):
                         tablelists_temp.append(tablelist)
                     else:
@@ -93,7 +95,7 @@ class SpamAssassin(object):
         # create final json
         self.report_json = dict()
         for tablelist in tablelists:
-            wordlist = re.split('\s+', tablelist)
+            wordlist = re.split(r'\s+', tablelist)
             self.report_json[wordlist[1]] = {'partscore': float(wordlist[0]), 'description': ' '.join(wordlist[1:])}
 
         headers = headers.decode('utf-8').replace(' ', '').replace(':', ';').replace('/', ';').split(';')
@@ -110,6 +112,3 @@ class SpamAssassin(object):
 
     def get_fulltext(self):
         return self.report_fulltext
-
-
-
