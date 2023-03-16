@@ -28,7 +28,8 @@ class SpamAssassin(object):
             ready = select.select([client], [], [], timeout)
             if ready[0] is None:
                 # Kill with Timeout!
-                logging.info('[SpamAssassin] - Timeout ({0}s)!'.format(str(timeout)))
+                logging.info(
+                    '[SpamAssassin] - Timeout ({0}s)!'.format(str(timeout)))
                 break
 
             data = client.recv(4096)
@@ -74,8 +75,10 @@ class SpamAssassin(object):
             logging.error(first_line)
             return None
 
-        report_list = [s.strip() for s in body.decode('utf-8').strip().split('\n')]
-        linebreak_num = report_list.index([s for s in report_list if "---" in s][0])
+        report_list = [s.strip()
+                       for s in body.decode('windows-1252').strip().split('\n')]
+        linebreak_num = report_list.index(
+            [s for s in report_list if "---" in s][0])
         tablelists = [s for s in report_list[linebreak_num + 1:]]
 
         self.report_fulltext = '\n'.join(report_list)
@@ -96,9 +99,11 @@ class SpamAssassin(object):
         self.report_json = dict()
         for tablelist in tablelists:
             wordlist = re.split(r'\s+', tablelist)
-            self.report_json[wordlist[1]] = {'partscore': float(wordlist[0]), 'description': ' '.join(wordlist[1:])}
+            self.report_json[wordlist[1]] = {'partscore': float(
+                wordlist[0]), 'description': ' '.join(wordlist[1:])}
 
-        headers = headers.decode('utf-8').replace(' ', '').replace(':', ';').replace('/', ';').split(';')
+        headers = headers.decode(
+            'utf-8').replace(' ', '').replace(':', ';').replace('/', ';').split(';')
         self.score = float(headers[2])
 
     def get_report_json(self):
