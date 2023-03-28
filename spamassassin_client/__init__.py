@@ -67,7 +67,6 @@ class SpamAssassin(object):
         first_line = match.group(1)
         headers = match.group(2)
         body = response[match.end(0):]
-        body = body.encode('utf-8', 'ignore')
 
         # Checking response is good
         match = first_line_pattern.match(first_line)
@@ -77,7 +76,7 @@ class SpamAssassin(object):
             return None
 
         report_list = [s.strip()
-                       for s in body.decode('utf-8').strip().split('\n')]
+                       for s in body.decode('utf-8', errors='ignore').strip().split('\n')]
         linebreak_num = report_list.index(
             [s for s in report_list if "---" in s][0])
         tablelists = [s for s in report_list[linebreak_num + 1:]]
