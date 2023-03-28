@@ -49,7 +49,7 @@ class SpamAssassin(object):
         data_len = str(len(message)).encode()
         reqfp.write(b'REPORT SPAMC/1.2\r\n')
         reqfp.write(b'Content-Length: ' + data_len + b'\r\n')
-        reqfp.write(b'User: cx42\r\n\r\n')
+        reqfp.write(b'User: debian-spamd\r\n\r\n')
         reqfp.write(message)
         return reqfp.getvalue()
 
@@ -67,6 +67,7 @@ class SpamAssassin(object):
         first_line = match.group(1)
         headers = match.group(2)
         body = response[match.end(0):]
+        body = body.encode('utf-8', 'ignore')
 
         # Checking response is good
         match = first_line_pattern.match(first_line)
@@ -76,7 +77,7 @@ class SpamAssassin(object):
             return None
 
         report_list = [s.strip()
-                       for s in body.decode('windows-1252').strip().split('\n')]
+                       for s in body.decode('utf-8').strip().split('\n')]
         linebreak_num = report_list.index(
             [s for s in report_list if "---" in s][0])
         tablelists = [s for s in report_list[linebreak_num + 1:]]
